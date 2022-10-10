@@ -1,24 +1,22 @@
 syntax = "v1"
 
 info (
-	title: // TODO: add title
-	desc: // TODO: add description
+	title: ""// TODO: add title
+	desc: ""// TODO: add description
 	author: "{{.gitUser}}"
 	email: "{{.gitEmail}}"
 )
 
-type request {
-	// TODO: add members here and delete this comment
-}
+type (
+	HealthResp {
+		Up string `json:"up"`
+	}
+)
 
-type response {
-	// TODO: add members here and delete this comment
-}
-
+@server(
+	prefix: health
+)
 service {{.serviceName}} {
-	@handler GetUser // TODO: set handler name and delete this comment
-	get /users/id/:userId(request) returns(response)
-
-	@handler CreateUser // TODO: set handler name and delete this comment
-	post /users/create(request)
+	@handler HealthCheck
+  	get /up returns (HealthResp)
 }
