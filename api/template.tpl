@@ -7,6 +7,7 @@ info (
 	email: "{{.gitEmail}}"
 )
 
+// Health
 type (
 	HealthResp {
 		Up string `json:"up"`
@@ -14,9 +15,10 @@ type (
 )
 
 @server(
+	group: health
 	prefix: health
 )
 service {{.serviceName}} {
-	@handler HealthCheck
+	@handler Health
   	get /up returns (HealthResp)
 }
