@@ -5,3 +5,7 @@ func new{{.upperStartCamelObject}}(conn sqlx.SqlConn{{if .withCache}}, c cache.C
 		table:      {{.table}},
 	}
 }
+{{if .withCache}}func (m *basic) genCacheKey(ctx context.Context) string {
+	tnt := ctx.Value(constant.Tenant).(string)
+	return fmt.Sprintf({{.cacheKeys}}, tnt)
+}{{end}}
