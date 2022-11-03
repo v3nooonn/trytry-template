@@ -4,7 +4,6 @@ import (
 	"net/http"
 
     e "github.com/levvel-health/rpms-service/pkg/error"
-
 	"github.com/zeromicro/go-zero/rest/httpx"
 	{{.ImportPackages}}
 )
