@@ -11,7 +11,9 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 	{{.keyValues}} = cachekey.Set(ctx, {{.keyValues}})
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}})", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
-		return conn.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
+		err = conn.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
+
+		return nil, err
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err:=m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
 
