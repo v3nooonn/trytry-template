@@ -1,8 +1,12 @@
 
 func (m *default{{.upperStartCamelObject}}Model) Delete(ctx context.Context, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) error {
+    if err := schema.Set(ctx, m.CachedConn); err != nil {
+    	return errors.Wrap(err, "failed to set pg schema")
+    }
+
 	{{if .withCache}}{{if .containsIndexCache}}data, err:=m.FindOne(ctx, {{.lowerStartCamelPrimaryKey}})
 	if err!=nil{
-		return err
+		return errors.Wrap(err, "failed to find {{.upperStartCamelObject}}")
 	}
 
 {{end}}	{{.keys}}
@@ -11,5 +15,6 @@ func (m *default{{.upperStartCamelObject}}Model) Delete(ctx context.Context, {{.
 		return conn.ExecCtx(ctx, query, {{.lowerStartCamelPrimaryKey}})
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("delete from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}}", m.table)
 		_,err:=m.conn.ExecCtx(ctx, query, {{.lowerStartCamelPrimaryKey}}){{end}}
-	return err
+
+	return errors.Wrap(err, "failed to delete {{.upperStartCamelObject}}")
 }
