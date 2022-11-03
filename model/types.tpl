@@ -1,10 +1,10 @@
 
 type (
-	{{.lowerStartCamelObject}}Basic interface{
+	{{.lowerStartCamelObject}}Model interface{
 		{{.method}}
 	}
 
-	basic struct {
+	default{{.upperStartCamelObject}}Model struct {
 		{{if .withCache}}sqlc.CachedConn{{else}}conn sqlx.SqlConn{{end}}
 		table string
 	}

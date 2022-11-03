@@ -11,16 +11,16 @@ var _ {{.upperStartCamelObject}}Model = (*custom{{.upperStartCamelObject}}Model)
 
 type (
 	{{.upperStartCamelObject}}Model interface {
-		{{.lowerStartCamelObject}}Default
+		{{.lowerStartCamelObject}}Model
 	}
 
-	{{.upperStartCamelObject}} struct {
-		*{{.upperStartCamelObject}}Default
+	{{.upperStartCamelObject}}Model struct {
+		*{{.upperStartCamelObject}}Model
 	}
 )
 
-func New{{.upperStartCamelObject}}(conn sqlx.SqlConn{{if .withCache}}, c cache.CacheConf{{end}}) {{.upperStartCamelObject}}Model {
-	return &custom{{.upperStartCamelObject}}Default{
-		{{.upperStartCamelObject}}Default: new{{.upperStartCamelObject}}Default(conn{{if .withCache}}, c{{end}}),
+func New{{.upperStartCamelObject}}Model(conn sqlx.SqlConn{{if .withCache}}, c cache.CacheConf{{end}}) {{.upperStartCamelObject}}Model {
+	return &custom{{.upperStartCamelObject}}Model{
+		default{{.upperStartCamelObject}}Model: new{{.upperStartCamelObject}}Model(conn{{if .withCache}}, c{{end}}),
 	}
 }

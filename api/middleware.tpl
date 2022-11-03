@@ -2,8 +2,7 @@ package middleware
 
 import "net/http"
 
-type {{.name}} struct {
-}
+type {{.name}} struct {}
 
 func New{{.name}}() *{{.name}} {
 	return &{{.name}}{}

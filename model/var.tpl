@@ -1,6 +1,6 @@
 
 var (
-	{{.lowerStartCamelObject}}Fields         = builder.RawFieldNames(&{{.upperStartCamelObject}}{}{{if .postgreSql}},true{{end}})
+    {{.lowerStartCamelObject}}FieldNames          = builder.RawFieldNames(&{{.upperStartCamelObject}}{}{{if .postgreSql}},true{{end}})
 	{{.lowerStartCamelObject}}Rows                = strings.Join({{.lowerStartCamelObject}}Fields, ",")
 	{{.lowerStartCamelObject}}RowsExpectAutoSet   = {{if .postgreSql}}strings.Join(stringx.Remove({{.lowerStartCamelObject}}Fields, {{if .autoIncrement}}"{{.originalPrimaryKey}}",{{end}} "create_time", "update_time", "create_at", "update_at"), ","){{else}}strings.Join(stringx.Remove({{.lowerStartCamelObject}}FieldNames, {{if .autoIncrement}}"{{.originalPrimaryKey}}",{{end}} "`create_time`", "`update_time`", "`create_at`", "`update_at`"), ","){{end}}
 	{{.lowerStartCamelObject}}RowsWithPlaceHolder = {{if .postgreSql}}builder.PostgreSqlJoin(stringx.Remove({{.lowerStartCamelObject}}Fields, "{{.originalPrimaryKey}}", "create_time", "update_time", "create_at", "update_at")){{else}}strings.Join(stringx.Remove({{.lowerStartCamelObject}}FieldNames, "{{.originalPrimaryKey}}", "`create_time`", "`update_time`", "`create_at`", "`update_at`"), "=?,") + "=?"{{end}}

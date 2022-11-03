@@ -7,18 +7,18 @@ info (
 	email: "{{.gitEmail}}"
 )
 
-// Health
+@server(
+	group: ping
+	prefix: ping
+)
+service {{.serviceName}} {
+	@handler Ping
+  	get / returns (Pong)
+}
+
+// Ping
 type (
-	HealthResp {
+	Pong {
 		Up string `json:"up"`
 	}
 )
-
-@server(
-	group: health
-	prefix: health
-)
-service {{.serviceName}} {
-	@handler Health
-  	get /up returns (HealthResp)
-}
