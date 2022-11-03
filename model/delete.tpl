@@ -10,6 +10,7 @@ func (m *default{{.upperStartCamelObject}}Model) Delete(ctx context.Context, {{.
 	}
 
 {{end}}	{{.keys}}
+    {{.keyValues}} = cachekey.Set(ctx, {{.keyValues}})
     _, err {{if .containsIndexCache}}={{else}}:={{end}} m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}}", m.table)
 		return conn.ExecCtx(ctx, query, {{.lowerStartCamelPrimaryKey}})
