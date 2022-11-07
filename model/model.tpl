@@ -14,7 +14,7 @@ type (
 		{{.lowerStartCamelObject}}Model
 	}
 
-	{{.upperStartCamelObject}}Model struct {
+	custom{{.upperStartCamelObject}}Model struct {
 		*{{.upperStartCamelObject}}Model
 	}
 )
