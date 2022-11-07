@@ -15,7 +15,7 @@ type (
 	}
 
 	custom{{.upperStartCamelObject}}Model struct {
-		*{{.upperStartCamelObject}}Model
+		*default{{.upperStartCamelObject}}Model
 	}
 )
 
