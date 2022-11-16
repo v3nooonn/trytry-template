@@ -10,11 +10,11 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 	{{if .withCache}}{{.keys}}
 	{{.keyValues}} = cachekey.Set(ctx, {{.keyValues}})
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}})", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
 		err = conn.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 
 		return nil, err
-	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
+	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err:=m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
 
 
@@ -28,11 +28,11 @@ func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context
 	{{if .withCache}}{{.keys}}
 	{{.keyValues}} = cachekey.Set(ctx, {{.keyValues}})
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}})", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
 		err = session.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 
 		return nil, err
-	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
+	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.table, {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err:=m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
 
 
