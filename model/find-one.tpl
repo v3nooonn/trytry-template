@@ -1,58 +1,48 @@
 
 func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-	if err := schema.Set(ctx, m.CachedConn); err != nil {
-    		return nil, errors.Wrap(err, "failed to set pg schema")
+	var resp {{.upperStartCamelObject}}
+
+    toSQL, args, err := m.Columns(ctx).Where(
+    	squirrel.Eq{"{{.originalPrimaryKey}}": {{.lowerStartCamelPrimaryKey}}},
+    ).Limit(1).ToSql()
+    if err != nil {
+    	return nil, errors.Wrap(err, "toSQL construction error")
     }
 
 	{{if .withCache}}{{.cacheKey}}
 	{{.cacheKeyVariable}} = cachekey.Set(ctx, {{.cacheKeyVariable}})
-	var resp {{.upperStartCamelObject}}
-	err := m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		query :=  fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, {{.lowerStartCamelPrimaryKey}})
-	})
+	err = m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		return conn.QueryRowCtx(ctx, v, toSQL, args...)
+	}){{else}}err = m.conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelPrimaryKey}}){{end}}
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+	case ErrNotFound:
+		return nil, errors.Wrap(err, fmt.Sprintf("{{.upperStartCamelObject}} not found by {{.originalPrimaryKey}}: %v", {{.lowerStartCamelPrimaryKey}}))
 	default:
 		return nil, errors.Wrap(err, "failed to find {{.upperStartCamelObject}}")
-	}{{else}}query := fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-	var resp {{.upperStartCamelObject}}
-	err := m.conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelPrimaryKey}})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, errors.Wrap(err, "failed to find {{.upperStartCamelObject}}")
-	}{{end}}
+	}
 }
 
 func (m *default{{.upperStartCamelObject}}Model) TransFindOne(ctx context.Context, session sqlx.Session, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-	{{if .withCache}}{{.cacheKey}}
-	{{.cacheKeyVariable}} = cachekey.Set(ctx, {{.cacheKeyVariable}})
 	var resp {{.upperStartCamelObject}}
-	query :=  fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-	err := session.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelPrimaryKey}})
+
+    toSQL, args, err := m.Columns(ctx).Where(
+    	squirrel.Eq{"{{.originalPrimaryKey}}": {{.lowerStartCamelPrimaryKey}}},
+    ).Limit(1).ToSql()
+    if err != nil {
+    	return nil, errors.Wrap(err, "toSQL construction error")
+    }
+
+	{{if .withCache}}
+	err = session.QueryRowCtx(ctx, &resp, toSQL, {{.lowerStartCamelPrimaryKey}}){{else}}
+	err = m.conn.QueryRowCtx(ctx, &resp, toSQL, {{.lowerStartCamelPrimaryKey}}){{end}}
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+	case ErrNotFound:
+		return nil, errors.Wrap(err, fmt.Sprintf("{{.upperStartCamelObject}} not found by {{.originalPrimaryKey}}: %v", {{.lowerStartCamelPrimaryKey}}))
 	default:
 		return nil, errors.Wrap(err, "failed to find {{.upperStartCamelObject}}")
-	}{{else}}query := fmt.Sprintf("select %s from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}} limit 1", {{.lowerStartCamelObject}}Rows, m.table)
-	var resp {{.upperStartCamelObject}}
-	err := m.conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelPrimaryKey}})
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, errors.Wrap(err, "failed to find {{.upperStartCamelObject}}")
-	}{{end}}
+	}
 }

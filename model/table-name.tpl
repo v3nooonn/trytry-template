@@ -1,6 +1,6 @@
 
-func (m *default{{.upperStartCamelObject}}Model) tableName() string {
-	return m.table
+func (m *default{{.upperStartCamelObject}}Model) tableName(schema string) string {
+    return fmt.Sprintf("%s.%s", schema, m.table)
 }
 
 func (q *{{.upperStartCamelObject}}) SetCreatedAtAndUpdatedAt() {
