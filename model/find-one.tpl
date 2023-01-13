@@ -13,7 +13,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
 	{{.cacheKeyVariable}} = cachekey.Set(ctx, {{.cacheKeyVariable}})
 	err = m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		return conn.QueryRowCtx(ctx, v, toSQL, args...)
-	}){{else}}err = m.conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelPrimaryKey}}){{end}}
+	}){{else}}err = m.conn.QueryRowCtx(ctx, &resp, toSQL, args...){{end}}
 	switch err {
 	case nil:
 		return &resp, nil
@@ -35,8 +35,8 @@ func (m *default{{.upperStartCamelObject}}Model) TransFindOne(ctx context.Contex
     }
 
 	{{if .withCache}}
-	err = session.QueryRowCtx(ctx, &resp, toSQL, {{.lowerStartCamelPrimaryKey}}){{else}}
-	err = m.conn.QueryRowCtx(ctx, &resp, toSQL, {{.lowerStartCamelPrimaryKey}}){{end}}
+	err = session.QueryRowCtx(ctx, &resp, toSQL, args...){{else}}
+	err = m.conn.QueryRowCtx(ctx, &resp, toSQL, args...){{end}}
 	switch err {
 	case nil:
 		return &resp, nil
