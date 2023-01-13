@@ -20,11 +20,8 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 		return nil, conn.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(ctxutil.GetTenant(ctx)), {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err := m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
-    if err != nil {
-    	return id, errors.Wrap(err, "failed to insert {{.upperStartCamelObject}}")
-    }
 
-	return id, nil
+	return id, errors.Wrap(err, "failed to insert {{.upperStartCamelObject}}")
 }
 
 func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context, session sqlx.Session, data *{{.upperStartCamelObject}}) (int64, error) {
@@ -40,9 +37,6 @@ func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context
 		return nil, err
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(ctxutil.GetTenant(ctx)), {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err:=m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
-    if err != nil {
-    	return id, errors.Wrap(err, "failed to insert {{.upperStartCamelObject}}")
-    }
 
-	return id, nil
+    return id, errors.Wrap(err, "failed to insert {{.upperStartCamelObject}}")
 }
