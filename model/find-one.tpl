@@ -1,5 +1,7 @@
 
 func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
+    schema := ctxutil.GetTenant(ctx)
+
 	var resp {{.upperStartCamelObject}}
 
     toSQL, args, err := m.Columns(ctx).Where(
@@ -10,7 +12,8 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
     }
 
 	{{if .withCache}}{{.cacheKey}}
-	{{.cacheKeyVariable}} = cachekey.Set(ctx, {{.cacheKeyVariable}})
+	{{.keyValues}} = cachekey.SchInj({{.keyValues}}, schema)
+
 	err = m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		return conn.QueryRowCtx(ctx, v, toSQL, args...)
 	}){{else}}err = m.conn.QueryRowCtx(ctx, &resp, toSQL, args...){{end}}
@@ -25,7 +28,9 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
 }
 
 func (m *default{{.upperStartCamelObject}}Model) TransFindOne(ctx context.Context, session sqlx.Session, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-	var resp {{.upperStartCamelObject}}
+	schema := ctxutil.GetTenant(ctx)
+
+    var resp {{.upperStartCamelObject}}
 
     toSQL, args, err := m.Columns(ctx).Where(
     	squirrel.Eq{"{{.originalPrimaryKey}}": {{.lowerStartCamelPrimaryKey}}},
