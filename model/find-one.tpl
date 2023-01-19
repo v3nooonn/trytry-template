@@ -1,8 +1,6 @@
 
 func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-    schema := ctxutil.GetTenant(ctx)
-
-	var resp {{.upperStartCamelObject}}
+    var resp {{.upperStartCamelObject}}
 
     toSQL, args, err := m.Columns(ctx).Where(
     	squirrel.Eq{"{{.originalPrimaryKey}}": {{.lowerStartCamelPrimaryKey}}},
