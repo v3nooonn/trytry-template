@@ -12,7 +12,6 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
     }
 
 	{{if .withCache}}{{.cacheKey}}
-	{{.keyValues}} = cachekey.SchInj({{.keyValues}}, schema)
 
 	err = m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		return conn.QueryRowCtx(ctx, v, toSQL, args...)
@@ -28,8 +27,6 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
 }
 
 func (m *default{{.upperStartCamelObject}}Model) TransFindOne(ctx context.Context, session sqlx.Session, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
-	schema := ctxutil.GetTenant(ctx)
-
     var resp {{.upperStartCamelObject}}
 
     toSQL, args, err := m.Columns(ctx).Where(
