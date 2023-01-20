@@ -23,6 +23,7 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
+
 		return nil, conn.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err := m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
@@ -41,9 +42,8 @@ func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context
 
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
-		err = session.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 
-		return nil, err
+		return nil, session.QueryRowCtx(ctx, &id, query, {{.expressionValues}})
 	}, {{.keyValues}}){{else}}query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
     _, err:=m.conn.ExecCtx(ctx, query, {{.expressionValues}}){{end}}
 
