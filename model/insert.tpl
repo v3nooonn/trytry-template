@@ -18,7 +18,7 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 	var id int64 = 0
     data.SetCreatedAtAndUpdatedAt()
 
-    {{end}}{{.keys}}
+	{{if .withCache}}{{.keys}}
     {{range .keysList}}
     {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
@@ -38,7 +38,7 @@ func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context
 	var id int64 = 0
     data.SetCreatedAtAndUpdatedAt()
 
-    {{end}}{{.keys}}
+	{{if .withCache}}{{.keys}}
     {{range .keysList}}
     {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
