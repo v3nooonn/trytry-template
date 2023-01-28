@@ -18,8 +18,9 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(ctx context.Context, dat
 	var id int64 = 0
     data.SetCreatedAtAndUpdatedAt()
 
-	{{if .withCache}}{{.keys}}
-	{{.keyValues}} = cachekey.SchInit({{.keyValues}}, schema)
+    {{end}}{{.keys}}
+    {{range .keysList}}
+    {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
@@ -37,8 +38,9 @@ func (m *default{{.upperStartCamelObject}}Model) TransInsert(ctx context.Context
 	var id int64 = 0
     data.SetCreatedAtAndUpdatedAt()
 
-	{{if .withCache}}{{.keys}}
-	{{.keyValues}} = cachekey.SchInit({{.keyValues}}, schema)
+    {{end}}{{.keys}}
+    {{range .keysList}}
+    {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
     _, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ({{.expression}}) RETURNING id", m.tableName(schema), {{.lowerStartCamelObject}}RowsExpectAutoSet)
