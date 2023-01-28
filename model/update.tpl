@@ -10,7 +10,8 @@ func (m *default{{.upperStartCamelObject}}Model) Update(ctx context.Context, {{i
 	}
 
     {{end}}{{.keys}}
-    {{.keyValues}} = cachekey.SchInit({{.keyValues}}, schema)
+    {{range .keysList}}
+    {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
     _, {{if .containsIndexCache}}err{{else}}err:{{end}}= m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}}", m.tableName(schema), {{.lowerStartCamelObject}}RowsWithPlaceHolder)
@@ -33,7 +34,8 @@ func (m *default{{.upperStartCamelObject}}Model) TransUpdate(ctx context.Context
 	}
 
     {{end}}{{.keys}}
-    {{.keyValues}} = cachekey.SchInit({{.keyValues}}, schema)
+    {{range .keysList}}
+    {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
 
     _, {{if .containsIndexCache}}err{{else}}err:{{end}}= m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}}", m.tableName(schema), {{.lowerStartCamelObject}}RowsWithPlaceHolder)
