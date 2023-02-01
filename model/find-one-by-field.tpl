@@ -15,7 +15,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}(ctx co
         },
 	    // indexQuery
 	    func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		    query := fmt.Sprintf("select %s from %s where {{.originalField}} limit 1", {{.lowerStartCamelObject}}Rows, m.table)
+		    query := fmt.Sprintf("select %s from %s where {{.originalField}} limit 1", {{.lowerStartCamelObject}}Rows, m.tableName(ctxutil.GetTenant(ctx)))
 
 		    return resp.{{.upperStartCamelPrimaryKey}}, conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelField}})
 	    },
@@ -31,7 +31,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}(ctx co
 		return nil, errors.Wrap(err, "failed to find one by {{.upperField}}")
 	}
 }{{else}}var resp {{.upperStartCamelObject}}
-	query := fmt.Sprintf("select %s from %s where {{.originalField}} limit 1", {{.lowerStartCamelObject}}Rows, m.table )
+	query := fmt.Sprintf("select %s from %s where {{.originalField}} limit 1", {{.lowerStartCamelObject}}Rows, m.tableName(ctxutil.GetTenant(ctx)) )
 	err := m.conn.QueryRowCtx(ctx, &resp, query, {{.lowerStartCamelField}})
 	switch err {
 	case nil:
