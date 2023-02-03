@@ -9,7 +9,7 @@ func (m *default{{.upperStartCamelObject}}Model) Delete(ctx context.Context, {{.
 
     {{end}}{{.keys}}
     {{range .keysList}}
-    {{.}} = cachekey.SchInit({{.}}, ctxutil.GetTenant(ctx)){{end}}
+    {{.}} = cachekey.SchInit({{.}}, schema){{end}}
 
     _, err {{if .containsIndexCache}}={{else}}:={{end}} m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where {{.originalPrimaryKey}} = {{if .postgreSql}}$1{{else}}?{{end}}", m.tableName(schema))
