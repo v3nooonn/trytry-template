@@ -12,7 +12,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(ctx context.Context, {{
     }
 
 	{{if .withCache}}{{.cacheKey}}
-	{{.cacheKeyVariable}} = cachekey.SchInit({{.cacheKeyFmt}}, schema)
+	{{.cacheKeyVariable}} = cachekey.SchInit({{.cacheKeyVariable}}, schema)
 
 	err = m.QueryRowCtx(ctx, &resp, {{.cacheKeyVariable}}, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		return conn.QueryRowCtx(ctx, v, toSQL, args...)

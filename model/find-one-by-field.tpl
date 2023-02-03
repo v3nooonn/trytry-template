@@ -5,7 +5,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}(ctx co
     var resp {{.upperStartCamelObject}}
 
 	{{if .withCache}}{{.cacheKey}}
-    {{.cacheKeyVariable}} = cachekey.SchInit({{.cacheKeyFmt}}, schema)
+    {{.cacheKeyVariable}} = cachekey.SchInit({{.cacheKeyVariable}}, schema)
 
 	err := m.QueryRowIndexCtx(ctx, &resp, {{.cacheKeyVariable}},
 	    // keyer
