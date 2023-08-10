@@ -19,7 +19,10 @@ spec:
       serviceAccountName: {{.ServiceAccount}}{{end}}
       containers:
       - name: {{.Name}}
-        image: {{.Image}}
+        {{if .EnvSecretRef}}envFrom:
+        - secretRef:
+            name: {{.EnvSecretRef}}
+        {{end}}image: {{.Image}}
         {{if .ImagePullPolicy}}imagePullPolicy: {{.ImagePullPolicy}}
         {{end}}ports:
         - containerPort: {{.Port}}
